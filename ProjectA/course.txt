@@ -1,0 +1,7 @@
+1;OOP 2;H001;Tamer;T;8:00;10:00
+2;Math;5E105;Jay;W;16:00;18:00
+3;Statistics;2N206;Ace;M;11:00;13:00
+4;Image Processing;H320;Lee;M;12:00;14:00
+5;Biology;2S502;Kim;F;9:00;11:00
+6;Physics;5E333;Cha;H;15:00;17:00
+7;Facebook;H212;Kang;F;12:00;14:00

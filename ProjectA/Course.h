@@ -1,56 +1,62 @@
-#include <iostream>
-#include <string>
+#include "Instructor.h"
+#include "Subject.h"
+#include "Room.h"
+#include "Time.h"
+
 
 using namespace std;
 
 class Course {
 private:
-	int sectionNo;
-	string subject;
+	int courseNo;
+	Subject subject;
 	Room room;
-	string instructor_name;
+	Instructor instructor;
 	char day;
-	Time timeStart;
-	Time timeEnd;
+	int timeStart;	// Conveniently, save Time with Integer (Hour) 
+	int timeEnd;		// Conveniently, save Time with Integer (Hour) 
 public:
+	Course();
+	Course(int no, Subject s, Room r, Instructor i, char d, int ts, int te );
+	int getCourseNo() { return courseNo; }
+	Subject getSubject() { return subject; }
+	Room getRoom() { return room; }
+	Instructor getInstructor() { return instructor; }
+	char getDay() { return day; }
+	int getTimeStart() { return timeStart; }
+	int getTimeEnd() { return timeEnd; }
+
+	void printTitle();
+	void print();
 };
 
-class Student {
-private:
-	int studentNo;
-	int password;
-	string name;
-	Course course;
-public:
-};
+Course::Course() { courseNo=0; subject=Subject(); room=Room(); instructor=Instructor(); day=' '; timeStart=0; timeEnd=0; }
+Course::Course(int no, Subject s, Room r, Instructor i, char d, int ts, int te ) {
+		courseNo=no; subject=s; room=r; instructor=i; day=d; timeStart=ts; timeEnd=te; }
 
-class Instructor {
-private:
-	int instructorNo;
-	int password;
-	string name;
-	int rank;
-public:
-};
+void Course::printTitle()
+	{
+		cout << "========================= Course List =========================" <<endl;
+		cout << setw(10) << setiosflags(ios::left) << "CourseNo";
+		cout << setw(20) << setiosflags(ios::left) << "Subject";
+		cout << setw(10) << setiosflags(ios::left) << "Room";
+		cout << setw(15) << setiosflags(ios::left) << "Instructor";
+		cout << setw(5) << setiosflags(ios::left) << "Day";
+		cout << setw(10) << setiosflags(ios::left) << "Start";
+		cout << setw(10) << setiosflags(ios::left) << "End" <<endl;
+	}
+void Course::print()
+	{
+		cout << setw(10) << setiosflags(ios::left) << courseNo;
+		cout << setw(20) << setiosflags(ios::left) << subject.getDescription();
+		cout << setw(10) << setiosflags(ios::left) << room.getDescription();
+		cout << setw(15) << setiosflags(ios::left) << instructor.getName();
+		cout << setw(5) << setiosflags(ios::left) << day;
+		cout << setw(10) << setiosflags(ios::left) << timeStart;
+		cout << setw(10) << setiosflags(ios::left) << timeEnd;
+	}
 
-class Room {
-private:
-	int roomNo;
-	string description;
-	int type;
-	int addRoom();
-public:
-};
-
-class Subject {
-private:
-	int subjectNo;
-	string description;
-	int unit;
-	int addSubject();
-public:
-};
-
+/*
 class StudentSchedule {
 private:
 	int studentNo;
@@ -58,8 +64,4 @@ private:
 	int noConflict();
 public:
 };
-
-class Time {
-	int hour;
-	int minute;
-};
+*/
