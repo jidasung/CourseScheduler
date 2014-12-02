@@ -79,6 +79,7 @@
     <ClInclude Include="Course.h" />
     <ClInclude Include="Instructor.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="Schedule.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="Subject.h" />
   </ItemGroup>
