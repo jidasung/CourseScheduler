@@ -443,7 +443,6 @@ void putCourse(int no){
 	std::cout << "Enter course number to enroll : ";
 	std::cin >> wantcourse;
 	for (int i = 0; i < choicelist.size(); i++){
-		cout << "choice : " << choicelist.at(i) <<endl;
 		if (wantcourse == choicelist.at(i)){
 			File << "\n" << no << ";" << wantcourse;
 			std::cout << "Complete!!" << endl;
@@ -1050,9 +1049,15 @@ void readDataList(int database)
 			index = Token(data, line);				// Tokenize in Line
 			Course c = Course(atoi(data[0]), Subject(data[1]), Room(data[2]), Instructor(data[3]), data[4][0], atoi(data[5]), atoi(data[6]));	// Construct 'Course' from tokenized data
 			courseList.push_back(c);				// Insert to courseList
-			//for(int k=0; k<index; k++)
-				//std::cout << "data[" << k << "] = " << data[k] <<endl;
 		}
+
+		// courseList Á¤·Ä
+		sort(courseList.begin(), courseList.end(),
+			[](Course c1, Course c2)
+				{
+					return c1.getCourseNo() < c2.getCourseNo();
+				}
+		);
 		break;
 	case user:
 		break;
