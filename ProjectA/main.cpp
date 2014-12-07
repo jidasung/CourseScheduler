@@ -50,7 +50,7 @@ void UpdatePassword();
 
 // student menu
 void putCourse(int);
-void showAvailableCourses(int);
+bool showAvailableCourses(int);
 void showMyCourses(int);
 bool changePassword();
 
@@ -443,6 +443,7 @@ void putCourse(int no){
 	std::cout << "Enter course number to enroll : ";
 	std::cin >> wantcourse;
 	for (int i = 0; i < choicelist.size(); i++){
+		cout << "choice : " << choicelist.at(i) <<endl;
 		if (wantcourse == choicelist.at(i)){
 			File << "\n" << no << ";" << wantcourse;
 			std::cout << "Complete!!" << endl;
@@ -452,12 +453,13 @@ void putCourse(int no){
 	File.close();
 
 }
-void showAvailableCourses(int no) {
+bool showAvailableCourses(int no) {
 	
 	choicelist.clear();
 
 	// 1. Get Scheudle List
 	getScheudleList(no);
+
 	// 2. Get All Course List
 	readDataList(course);
 
@@ -467,6 +469,15 @@ void showAvailableCourses(int no) {
 	}
 
 	// 4. Print Available Courses
+
+	//4-0 When a Student has No Schedule
+	if(myCourseList.empty()) {
+		printDataList(course);
+		for(int i=0; i<courseList.size();i++)
+			choicelist.push_back(courseList.at(i).getCourseNo());
+		return true;
+	}
+
 	// 4-1 Not In My Schedule.
 	// 4-2 No Conflict With My Scheduel.
 	courseList.at(0).printTitle();
@@ -492,6 +503,8 @@ void showAvailableCourses(int no) {
 		}
 	}
 	cout << endl;
+
+	return true;
 }
 void showMyCourses(int no){ //no는 학생번호 의미
 
