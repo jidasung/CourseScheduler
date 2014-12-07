@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include<Windows.h>
+#include<conio.h>
 
 using namespace std;
 
@@ -20,7 +22,14 @@ vector<Course> myCourseList = vector<Course>();  //viewmyschedule()에서 전체강의
 vector<Schedule> scheduleList = vector<Schedule>();
 vector<int> choicelist = vector<int>();  // available course list
 
-void LoginInterface();
+// User Information
+string username, password;	// user/pass
+int userNo; char type;
+
+void xy(int x,int y);
+bool LoginInterface();
+
+char checkUser();
 void AdministratorMenu();
 void StudentMenu();
 
@@ -32,10 +41,7 @@ void Course_SubMenu();
 void User_SubMenu();
 void BuildFile_SubMenu();
 
-
 void deleteRecord(string);
-
-
 
 void Enroll();
 void ViewAvailable();
@@ -46,6 +52,7 @@ void UpdatePassword();
 void putCourse(int);
 void showAvailableCourses(int);
 void showMyCourses(int);
+bool changePassword();
 
 void showFile(int);
 void updateFile(int);
@@ -53,30 +60,98 @@ void addFile(int);
 void deleteFile(int);
 
 int Token(char* data[], char *line);
-void getDataList(int database);
+void readDataList(int database);
+void writeDataList(int database);
 void printDataList(int database);
 void getScheudleList(int no);
 
 
 int main() {
-	AdministratorMenu();
+	readDataList(instructor);
+	readDataList(room);
+	readDataList(student);
+	readDataList(subject);
+	readDataList(course);
+	readDataList(schedule);
+	system("cls");
+	while(1) {
+		if(LoginInterface() == true) {
+			if(checkUser() == 'i') {	// Administrator
+				system("cls");
+				AdministratorMenu();
+			}
+			else if (checkUser() == 's') {	// Student
+				system("cls");
+				StudentMenu();
+			}
+			else {
+				char again;
+				xy(0,10); cout << " No Valid ID and PW. Try Again? (y/n)"; cin >> again;
+				if(again=='n') return 0;
+			}
+		}
+	}
+	return 0;
 }
 
-void LoginInterface()
-{
-	string username;
-	string password;
-	std::cout << "* * * * * * * *  Login  * * * * * * * * *" <<endl;
-	std::cout << "*"<<endl;
-	std::cout << "*       Enter username : "; std::cin >> username;
-	std::cout << "*       Enter password : "; std::cin >> password;
-	std::cout << "*"<<endl;
-	std::cout << "* * * * * * * * * * * * * * * * * * * * *" <<endl;
+/****************************************** Login & Menu *********************************************/
 
-	// check ID/PW and go to admin or student menu.
-	AdministratorMenu();
-	//StudentMenu();
+//Display input in user define coordinates
+void xy(int x,int y){
+	HANDLE h=NULL;
+	h=GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD c={x,y};
+	SetConsoleCursorPosition(h,c);
 }
+
+// Login Interface
+bool LoginInterface(){
+	system("cls");
+	username="", password="";
+		cout<<"\n\n\n\t-------------Login Menu ---------------";
+		cout<<"\n\t|                                    |";
+		cout<<"\n\t|     Enter username  :              |";
+		cout<<"\n\t|                                    |";	
+		cout<<"\n\t|     Enter password  :              |";
+		cout<<"\n\t|                                    |";	
+		cout<<"\n\t|------------------------------------|\n\t";
+
+		xy(31,5);cin>>username;     // --- Input is visible/ unmasked
+		xy(31,7);
+		//-------------------------Input is not visible/ masked (*)
+				char ch = _getch();
+				while(ch != 13){//character 13 is enter
+					password.push_back(ch);
+					cout << '*';
+					ch = _getch();
+				}
+										 
+		//cout<<"\n\n\n Access granted! You entered :"<<pass<<endl; // you don't display pass in actual program
+		if(username == "" && password == "" )	return false;
+		return true;
+}
+char checkUser() {
+	type = 'z';
+	readDataList(instructor);
+	for(int i=0; i<instructorList.size(); i++) {
+		if(instructorList.at(i).getName() == username)
+			if(instructorList.at(i).getPassword() == password) {
+				userNo = instructorList.at(i).getInstructorNo();
+				type = 'i';
+			}
+	}
+	readDataList(student);
+	for(int j=0; j<studentList.size(); j++) {
+		if(studentList.at(j).getName() == username)
+			if(studentList.at(j).getPassword() == password) {
+				userNo = studentList.at(j).getStudentNo();
+				type = 's';
+			}
+	}
+	return type;
+}
+
+// Menu Inteface
 void AdministratorMenu()
 {
 	char m;
@@ -144,6 +219,7 @@ void StudentMenu()
 	}
 }
 
+// SubMenu Inteface
 void Instructor_SubMenu()
 {
 	std::cout << "       * * *  Admin sub-menu for Instructor Information * * *" <<endl;
@@ -313,6 +389,8 @@ void User_SubMenu()
 	std::cout << "       *          (X)EXIT back to main         *" <<endl;
 	std::cout << "       *                                       *"<<endl;
 	std::cout << "       * * * * * * * * * * * * * * * * * * * * *" <<endl;
+
+
 }
 void BuildFile_SubMenu()
 {
@@ -328,22 +406,27 @@ void BuildFile_SubMenu()
 	std::cout << "       *                                         *"<<endl;
 	std::cout << "       * * * * * * * * * * * * * * * * * * * * * *" <<endl;
 }
+/****************************************** Login & Menu *********************************************/
 
+/****************************************** Student Menu Functions *********************************************/
 
-// student menu
 void Enroll(){
-	putCourse(1);   // 아직 학생을 구분할 수 없어서 예시로 1번 학생을 집어넣음.
+	putCourse(userNo);
 	StudentMenu();
 }
 void ViewAvailable() {
-	showAvailableCourses(1);
+	showAvailableCourses(userNo);
 	StudentMenu();
 }
 void ViewMySchedule(){
-	showMyCourses(1);  // 아직 학생을 구분할 수 없어서 예시로 1번 학생을 집어넣음.
+	showMyCourses(userNo);
 	StudentMenu();
 }
-void UpdatePassword() {}
+
+void UpdatePassword() {
+	changePassword();
+	StudentMenu();
+}
 
 
 void putCourse(int no){
@@ -376,7 +459,7 @@ void showAvailableCourses(int no) {
 	// 1. Get Scheudle List
 	getScheudleList(no);
 	// 2. Get All Course List
-	getDataList(course);
+	readDataList(course);
 
 	// 3. Save My Courses to myCourseList
 	for (int k = 0; k < scheduleList.size(); k++){
@@ -438,37 +521,101 @@ void showMyCourses(int no){ //no는 학생번호 의미
 
 	// courseList 탐색
 	// courseList 에서 scheduleList의 course record 선택 출력
-	getDataList(course);
+	readDataList(course);
 	courseList.at(0).printTitle();
 	for (int k = 0; k < scheduleList.size(); k++)
 		courseList.at(scheduleList.at(k).getsectionno() - 1).print();
 	std::cout << endl;
 
 }
+bool changePassword() {
+	string pPW, nPW, aPW;
+	cout << "Present Password : ";
+			char ch1 = _getch();
+			while(ch1 != 13){//character 13 is enter
+				pPW.push_back(ch1);
+				cout << '*';
+				ch1 = _getch();
+			}
+			cout <<endl;
+			if(pPW != password) {
+				cout << "Wrong Password" <<endl;
+				return false;
+			}
+	cout << "New Password : ";
+			char ch2 = _getch();
+			while(ch2 != 13){//character 13 is enter
+				nPW.push_back(ch2);
+				cout << '*';
+				ch2 = _getch();
+			}
+			cout<<endl;
+	cout << "New Password Again : ";
+			char ch3 = _getch();
+			while(ch3 != 13){//character 13 is enter
+				aPW.push_back(ch3);
+				cout << '*';
+				ch3 = _getch();
+			}
+			cout <<endl;
+			if(nPW != aPW) {
+				cout << "New Password is wrong" <<endl;
+				return false;
+			}
 
+	if(type == 'i') {
+		readDataList(instructor);
+		Instructor user = Instructor();
+		for(int i=0; i<instructorList.size(); i++) {
+			if(instructorList.at(i).getInstructorNo() == userNo) {
+				user = instructorList.at(i);
+				user.setPassword(nPW);
+				instructorList[i] = user;
+			}
+		}
+		writeDataList(instructor);
+	}
+	else if (type == 's') {
+		readDataList(student);
+		Student user = Student();
+		for(int i=0; i<studentList.size(); i++) {
+			if(studentList.at(i).getStudentNo() == userNo) {
+				user = studentList.at(i);
+				user.setPassword(nPW);
+				studentList[i] = user;
+			}
+		}
+		writeDataList(student);
+	}
+	return true;
+}
+
+/****************************************** Student Menu Functions *********************************************/
+
+/****************************************** Administrator Menu Functions *********************************************/
 
 void showFile(int database)
 {
 	switch(database)
 	{
 	case instructor:
-		getDataList(instructor);
+		readDataList(instructor);
 		printDataList(instructor);
 		break;
 	case room:
-		getDataList(room);
+		readDataList(room);
 		printDataList(room);
 		break;
 	case student:
-		getDataList(student);
+		readDataList(student);
 		printDataList(student);
 		break;
 	case subject:
-		getDataList(subject);
+		readDataList(subject);
 		printDataList(subject);
 		break;
 	case course:
-		getDataList(course);
+		readDataList(course);
 		printDataList(course);
 		break;
 	case user:
@@ -494,7 +641,7 @@ void updateFile(int database)
 	case instructor:
 		std::cout << "Enter the number of which you want update : "; std::cin >> n;
 
-		File.open("subject.txt", ios::in|ios::out);
+		File.open("instructor.txt", ios::in|ios::out);
 		while(!File.eof()) {
 			File.getline(line, 100);					// Read by Line
 			
@@ -523,7 +670,7 @@ void updateFile(int database)
 
 		newRecord = newRecord.substr(0, newRecord.size()-1);	// Remove Last "\n"
 		File.close();
-		File.open("subject.txt", ios::out|ios::trunc);		// Re-Open with ios::trunc
+		File.open("instructor.txt", ios::out|ios::trunc);		// Re-Open with ios::trunc
 		File << newRecord;			// Write New Record (after delete)
 		break;
 	case room:
@@ -734,7 +881,6 @@ void addFile(int database)
 
 	File.close();
 }
-
 void deleteFile(int database)
 {
 	switch(database)
@@ -760,7 +906,6 @@ void deleteFile(int database)
 }
 
 
-
 int Token(char* data[], char *line)
 {
 	int i=0;
@@ -773,6 +918,7 @@ int Token(char* data[], char *line)
 	}
 	return i;
 }
+
 
 /*
 	Delete : Read Lines Except for Delete Record.
@@ -820,7 +966,7 @@ void deleteRecord(string s) {
 	File.close();
 }
 
-void getDataList(int database)
+void readDataList(int database)
 {
 	fstream File;
 	char line[1000];
@@ -901,6 +1047,56 @@ void getDataList(int database)
 	File.close();
 }
 
+void writeDataList(int database)
+{
+	fstream File;
+	string newRecord;
+	string record;
+	switch(database)
+	{
+	case instructor:
+		newRecord = "";
+		for(int i=0; i<instructorList.size(); i++) {
+			record.clear();
+			record += to_string(instructorList.at(i).getInstructorNo()) + ";";
+			record += instructorList.at(i).getPassword() + ";";
+			record += instructorList.at(i).getName() + ";";
+			record += instructorList.at(i).getRank();
+			record += "\n";
+		}
+		newRecord = newRecord.substr(0, newRecord.size()-1);	// Remove Last "\n"
+		File.open("instructor.txt", ios::out|ios::trunc);
+		File << newRecord;
+		break;
+	case room:
+		break;
+	case student:
+		newRecord = "";
+		for(int i=0; i<studentList.size(); i++) {
+			record.clear();
+			record = to_string(studentList.at(i).getStudentNo()) + ";";
+			record += studentList.at(i).getPassword() + ";";
+			record += studentList.at(i).getName() + ";";
+			record += studentList.at(i).getMajor();
+			record += "\n";
+			newRecord += record;
+			cout << "record : " + record <<endl;
+		}
+		newRecord = newRecord.substr(0, newRecord.size()-1);	// Remove Last "\n"
+		File.open("student.txt", ios::out|ios::trunc);
+		File << newRecord;
+		break;
+	case subject:
+		break;
+	case course:
+		break;
+	case user:
+		break;
+	}
+	File.close();
+}
+
+
 void printDataList(int database)
 {
 	switch(database)
@@ -950,6 +1146,12 @@ void printDataList(int database)
 	}
 }
 
+
+
+
+
+
+
 void getScheudleList(int no)
 {
 	fstream File;
@@ -968,3 +1170,4 @@ void getScheudleList(int no)
 	}
 	File.close();
 }
+

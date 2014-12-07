@@ -15,8 +15,11 @@ public:
 	Student(int no, string p, string n, string m) { studentNo=no; password=p; name=n; major=m; }
 
 	int getStudentNo() { return studentNo; }
+	string getPassword() { return password; }
 	string getName() { return name; }
 	string getMajor() { return major; }
+
+	void setPassword(string newPassword) { this->password = newPassword; }
 
 	void printTitle();
 	void print();

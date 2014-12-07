@@ -1,8 +1,8 @@
-1;1111;Jang Dong Gun;Computer Science
-2;2222;Kim Woo Been;Electrical Eng.
-3;3333;Park Ji Sung;Elctronics Eng.
-4;4444;Lee Yeon Hee;Physics
-5;4432;Wang Ji Hyeon;Biology
-6;6666;Kang Ho Dong;English
-7;7777;Lee Dae Ho;Baseball
+1;1111;Jang;Computer Science
+2;3333;Kim;Electrical Eng.
+3;3333;Park;Elctronics Eng.
+4;4444;Lee;Physics
+5;4432;Wang;Biology
+6;6666;Kang;English
+7;7777;Jeong;Baseball
 8;8888;Swings;Hiphop
