@@ -464,7 +464,12 @@ bool showAvailableCourses(int no) {
 
 	// 3. Save My Courses to myCourseList
 	for (int k = 0; k < scheduleList.size(); k++){
-		myCourseList.push_back(courseList.at(scheduleList.at(k).getsectionno() - 1));  // myCourseList에 현 학생이 듣고 있는 과목들 저장.
+		for( int t = 0; t < courseList.size(); t++) {
+			int schedule_cNo = scheduleList.at(k).getsectionno();
+			int course_cNo = courseList.at(t).getCourseNo();
+			if ( schedule_cNo == course_cNo)
+				myCourseList.push_back(courseList.at(t));  // myCourseList에 현 학생이 듣고 있는 과목들 저장.
+		}
 	}
 
 	// 4. Print Available Courses
@@ -535,8 +540,14 @@ void showMyCourses(int no){ //no는 학생번호 의미
 	// courseList 에서 scheduleList의 course record 선택 출력
 	readDataList(course);
 	courseList.at(0).printTitle();
-	for (int k = 0; k < scheduleList.size(); k++)
-		courseList.at(scheduleList.at(k).getsectionno() - 1).print();
+	for (int k = 0; k < scheduleList.size(); k++){
+		for( int t = 0; t < courseList.size(); t++) {
+			int schedule_cNo = scheduleList.at(k).getsectionno();
+			int course_cNo = courseList.at(t).getCourseNo();
+			if ( schedule_cNo == course_cNo)
+				courseList.at(t).print();
+		}
+	}
 	std::cout << endl;
 
 }
