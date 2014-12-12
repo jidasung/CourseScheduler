@@ -1,3 +1,11 @@
+/* 2014. 12. 12. Fri.
+ *
+ * Project : Course Scheduler
+ *
+ * Author : Hyeong Gyu Jeong & Wook Jeong
+ *
+ */
+
 #include "Course.h"
 #include "Student.h"
 #include "Schedule.h"
@@ -11,76 +19,101 @@
 
 using namespace std;
 
+/* enum list for switch */
 typedef enum Database { instructor, room, student, subject, course, user, schedule };
 
+/* STL vector for managing data from file. */
 vector<Instructor> instructorList = vector<Instructor>();
 vector<Room> roomList = vector<Room>();
 vector<Student> studentList = vector<Student>();
 vector<Subject> subjectList = vector<Subject>();
 vector<Course> courseList = vector<Course>();
-vector<Course> myCourseList = vector<Course>();  //viewmyschedule()에서 전체강의와 수강신청된 강의들을 비교하기위해 추가.
+vector<Course> myCourseList = vector<Course>(); // For comparing my course list with all list in "viewmyschedule()"
 vector<Schedule> scheduleList = vector<Schedule>();
-vector<int> choicelist = vector<int>();  // available course list
+vector<int> choicelist = vector<int>();  // For using available course list in "ViewAvailable()"
+/*******************************************************************************************************************************/
 
-// User Information
+/* User Information */
 string username, password;	// user/pass
 int userNo; char type;
-
+/* For Login Menu */
 void xy(int x,int y);
 bool LoginInterface();
+/*******************************************************************************************************************************/
 
+/* Main Menu */
 char checkUser();
 void AdministratorMenu();
 void StudentMenu();
 
+/* Sub Menu */
 void Instructor_SubMenu();
 void Room_SubMenu();
 void Student_SubMenu();
 void Subject_SubMenu();
 void Course_SubMenu();
 void User_SubMenu();
-void BuildFile_SubMenu();
+void BuildFile_SubMenu(); 
+/***************************/
 
+/* Delete Function */
 void deleteRecord(string);
+/*****************************************/
 
+/* Each Functions For Student Menu */
 void Enroll();
 void ViewAvailable();
 void ViewMySchedule();
 void UpdatePassword();
+/*****************************************/
 
-// student menu
+/* Detail Functions For Student Menu */
 void putCourse(int);
 bool showAvailableCourses(int);
 void showMyCourses(int);
 bool changePassword();
+/*****************************************/
 
+/* Main Functions for File Operation */
 void showFile(int);
 void updateFile(int);
 void addFile(int);
 void deleteFile(int);
+/*****************************************/
 
+/* Supporting File I/O */
 int Token(char* data[], char *line);
 void readDataList(int database);
 void writeDataList(int database);
 void printDataList(int database);
 void getScheudleList(int no);
+/*****************************************/
+
+/* User Information Functions */
+void UpdateOnlyName();
+void changeUsername();
+void UpdateinsPassword();
+/****************************************/
 
 
 int main() {
+
+	/* Initialize First Data List */
 	readDataList(instructor);
 	readDataList(room);
 	readDataList(student);
 	readDataList(subject);
 	readDataList(course);
 	readDataList(schedule);
+	
 	system("cls");
 	while(1) {
 		if(LoginInterface() == true) {
-			if(checkUser() == 'i') {	// Administrator
+			if(checkUser() == 'i') {				// Administrator
 				system("cls");
 				AdministratorMenu();
 			}
-			else if (checkUser() == 's') {	// Student
+			else if (checkUser() == 's') {			// Student
 				system("cls");
 				StudentMenu();
 			}
@@ -126,10 +159,11 @@ bool LoginInterface(){
 					ch = _getch();
 				}
 										 
-		//cout<<"\n\n\n Access granted! You entered :"<<pass<<endl; // you don't display pass in actual program
+		// return true if only we have real user
 		if(username == "" && password == "" )	return false;
 		return true;
 }
+
 char checkUser() {
 	type = 'z';
 	readDataList(instructor);
@@ -137,7 +171,7 @@ char checkUser() {
 		if(instructorList.at(i).getName() == username)
 			if(instructorList.at(i).getPassword() == password) {
 				userNo = instructorList.at(i).getInstructorNo();
-				type = 'i';
+				type = 'i'; // instructor
 			}
 	}
 	readDataList(student);
@@ -145,7 +179,7 @@ char checkUser() {
 		if(studentList.at(j).getName() == username)
 			if(studentList.at(j).getPassword() == password) {
 				userNo = studentList.at(j).getStudentNo();
-				type = 's';
+				type = 's'; // student
 			}
 	}
 	return type;
@@ -201,7 +235,7 @@ void StudentMenu()
 	std::cout << "*          (M)iew My Schedule                 *" <<endl;
 	std::cout << "*          (U)pdate password                  *" <<endl;
 	std::cout << "*          (X)EXIT                            *" <<endl;
-	std::cout << "*                                             *"<<endl;
+	std::cout << "*                                             *" <<endl;
 	std::cout << "* * * * * * * * * * * * * * * * * * * * * * * *" <<endl;
 
 	std::cin >> m;
@@ -390,7 +424,21 @@ void User_SubMenu()
 	std::cout << "       *                                       *"<<endl;
 	std::cout << "       * * * * * * * * * * * * * * * * * * * * *" <<endl;
 
+	char m;
+	std::cin >> m;
+	switch (m)
+	{
+	case 'U': UpdateOnlyName(); break;
+	case 'u': UpdateOnlyName(); break;
+	case 'P': UpdateinsPassword(); break;
+	case 'p': UpdateinsPassword(); break;
 
+	case 'X': AdministratorMenu(); break;
+	case 'x': AdministratorMenu(); break;
+	}
+
+	// recursion
+	User_SubMenu();
 }
 void BuildFile_SubMenu()
 {
@@ -404,25 +452,30 @@ void BuildFile_SubMenu()
 	std::cout << "       *          (U)ser List                    *" <<endl;
 	std::cout << "       *          (X)EXIT back to main           *" <<endl;
 	std::cout << "       *                                         *"<<endl;
-	std::cout << "       * * * * * * * * * * * * * * * * * * * * * *" <<endl;
+	std::cout << "       * * * * * * * * * * * * * * * * * * * * * *\n\n" <<endl;
+
+	std::cout << "       *  This Program don't need this Function  *\n" << endl;
+
+	AdministratorMenu();
+
 }
+
 /****************************************** Login & Menu *********************************************/
 
-/****************************************** Student Menu Functions *********************************************/
+/************************* Student Menu Functions ***********************************/
 
 void Enroll(){
-	putCourse(userNo);
+	putCourse(userNo);	// For 'your' course
 	StudentMenu();
 }
 void ViewAvailable() {
-	showAvailableCourses(userNo);
+	showAvailableCourses(userNo); // For 'your' course
 	StudentMenu();
 }
 void ViewMySchedule(){
-	showMyCourses(userNo);
+	showMyCourses(userNo); // For 'your' course
 	StudentMenu();
 }
-
 void UpdatePassword() {
 	changePassword();
 	StudentMenu();
@@ -436,8 +489,7 @@ void putCourse(int no){
 	showAvailableCourses(no);
 
 	// 2. Save to Schedule File.
-	//schedule.txt 맨 뒤에 학생번호;강의번호 삽입되는 부분.
-	int suc=0;  //성공여부 확인 변수.
+	int suc=0;  // success or fail
 	fstream File;
 	File.open("schedule.txt", ios::in | ios::app);
 	std::cout << "Enter course number to enroll : ";
@@ -448,7 +500,7 @@ void putCourse(int no){
 			std::cout << "Complete!!" << endl;
 			suc = 1; break;
 		}
-	}if (suc == 0) std::cout << "Conflict!!\n";  //suc=1이 안되어서 나오면 conflict로
+	}if (suc == 0) std::cout << "Conflict!!\n";  // fail... it means conflict.
 	File.close();
 
 }
@@ -468,7 +520,7 @@ bool showAvailableCourses(int no) {
 			int schedule_cNo = scheduleList.at(k).getsectionno();
 			int course_cNo = courseList.at(t).getCourseNo();
 			if ( schedule_cNo == course_cNo)
-				myCourseList.push_back(courseList.at(t));  // myCourseList에 현 학생이 듣고 있는 과목들 저장.
+				myCourseList.push_back(courseList.at(t));  // Save subjects taken by user to myCourseList
 		}
 	}
 
@@ -487,20 +539,25 @@ bool showAvailableCourses(int no) {
 	courseList.at(0).printTitle();
 	for (int i = 0; i < courseList.size(); i++){
 		for (int j = 0; j < myCourseList.size(); j++){
-			if (courseList.at(i).getCourseNo() == myCourseList.at(j).getCourseNo()) break;  //같은 수업인지 확인
-			if (courseList.at(i).getDay() == myCourseList.at(j).getDay()){  //요일이 겹치는지 확인.
-				// 시간이 겹치는 조건은. 비교1의 시작시간이 비교2의 끝시간보다 작고, 비교1의 끝시간이 비교2의 시작시간보다 크면 겹치는 것으로함.
-				if (courseList.at(i).getTimeEnd() > myCourseList.at(j).getTimeStart() && courseList.at(i).getTimeStart() < myCourseList.at(j).getTimeEnd()) break;  //시간이 겹치는지 확인.
-				if (j == myCourseList.size() - 1){  //요일은 겹치고 시간이 겹치지 않으면 출력, 코스번호만 저장
-					courseList.at(i).print();  //available list 출력
-					choicelist.push_back(courseList.at(i).getCourseNo()); //저장
+			if (courseList.at(i).getCourseNo() == myCourseList.at(j).getCourseNo()) break;  // Check if these are same courses
+			if (courseList.at(i).getDay() == myCourseList.at(j).getDay()){  // Check if day overlaps each other. (DAY)
+				/* Conflic Check!
+				 *      A----B
+				 *  C----D
+				 *  1. If A<D and C<B, It is overlaped.
+				 *  2. Then except that case.
+				 */ 
+				if (courseList.at(i).getTimeEnd() > myCourseList.at(j).getTimeStart() && courseList.at(i).getTimeStart() < myCourseList.at(j).getTimeEnd()) break; // Check if time overlaps each other. (TIME)
+				if (j == myCourseList.size() - 1){  // Overlap day but not time, just print and save only courseNo
+					courseList.at(i).print();  // print available list 
+					choicelist.push_back(courseList.at(i).getCourseNo()); // save
 					break;
 				}
 			}
-			else{//요일이 겹치지 않으면
-				if (j == myCourseList.size() - 1){  //요일이 하나도 겹치지 않으면 출력, 코스번호만 저장
-					courseList.at(i).print();  //available list 출력
-					choicelist.push_back(courseList.at(i).getCourseNo()); //저장
+			else{ // Not overlap day
+				if (j == myCourseList.size() - 1){  // print and save only courseNo
+					courseList.at(i).print();  // print available list
+					choicelist.push_back(courseList.at(i).getCourseNo()); // save
 					break;
 				}
 			}
@@ -510,7 +567,7 @@ bool showAvailableCourses(int no) {
 
 	return true;
 }
-void showMyCourses(int no){ //no는 학생번호 의미
+void showMyCourses(int no){ // my studentNo : no.
 
 	fstream File;
 	char line[1000];
@@ -522,13 +579,13 @@ void showMyCourses(int no){ //no는 학생번호 의미
 		File.getline(line, 100);
 		index = Token(data, line);
 		Schedule s = Schedule(atoi(data[0]),atoi(data[1]));
-		if (atoi(data[0]) == no){  //List에 학생번호==no인 것만 저장.
+		if (atoi(data[0]) == no){  // Save my schedule to list
 			scheduleList.push_back(s);
 		}
 	}
 	File.close();
 
-	// scheduleList 정렬
+	// Sort ScheduleList
 	sort(scheduleList.begin(), scheduleList.end(),
 		[](Schedule s1, Schedule s2)
             {
@@ -536,11 +593,11 @@ void showMyCourses(int no){ //no는 학생번호 의미
             }
 	);
 
-	// courseList 탐색
-	// courseList 에서 scheduleList의 course record 선택 출력
+	// Search in courseList
+	// Print selectively course record from scheduleList in courseList
 	readDataList(course);
-	courseList.at(0).printTitle();
-	for (int k = 0; k < scheduleList.size(); k++){
+	courseList.at(0).printTitle(); // Print Titles.
+	for (int k = 0; k < scheduleList.size(); k++) {
 		for( int t = 0; t < courseList.size(); t++) {
 			int schedule_cNo = scheduleList.at(k).getsectionno();
 			int course_cNo = courseList.at(t).getCourseNo();
@@ -615,12 +672,13 @@ bool changePassword() {
 
 /****************************************** Student Menu Functions *********************************************/
 
-/****************************************** Administrator Menu Functions *********************************************/
+/************************* Administrator Menu Functions ********************************/
 
 void showFile(int database)
 {
 	switch(database)
 	{
+		// read and print
 	case instructor:
 		readDataList(instructor);
 		printDataList(instructor);
@@ -647,6 +705,8 @@ void showFile(int database)
 }
 void updateFile(int database)
 {
+	/* Provide each information menu for update */
+
 	fstream File;
 	char line[1000];
 	int index;
@@ -657,7 +717,8 @@ void updateFile(int database)
 	string record;
 	string newRecord;
 
-	string a,b,c,d,e,f,g,z;
+	int x1, x2, x3, x4, x5, x6;
+	string a,b,c,d,e,f,g,h,z;
 
 	switch(database)
 	{
@@ -680,7 +741,7 @@ void updateFile(int database)
 				a = to_string(n);
 				std::cout << "InstructorNo : " << a <<endl;
 				std::cout << "Password : "; std::cin>>b;
-				std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// 띄어쓰기
+				std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// Leave Spaces
 				std::cout << "Rank : "; std::cin>>d;
 				record = a+";"+b+";"+z+c+";"+d+"\n";
 				newRecord += record;
@@ -749,9 +810,9 @@ void updateFile(int database)
 				a = to_string(n);
 				std::cout << "StudentNo : " << a <<endl;
 				std::cout << "Password : "; std::cin>>b;
-				std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// 띄어쓰기
-				std::cout << "Major : "; std::cin>>d;
-				record = a+";"+b+";"+z+c+";"+d+"\n";
+				std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// Leave Spaces
+				std::cout << "Major : "; cin >> h; getline(cin, d, '\n');
+				record = a+";"+b+";"+z+c+";"+h+d+"\n";
 				newRecord += record;
 			}
 		}
@@ -783,9 +844,9 @@ void updateFile(int database)
 				isValid = true;
 				a = to_string(n);
 				std::cout << "SubjectNo : " << a <<endl;
-				std::cout << "Description : "; std::cin>>b;
+				std::cout << "Description : "; cin >> z; getline(cin, b, '\n');
 				std::cout << "Unit : "; std::cin>>c;
-				record = a+";"+b+";"+c+"\n";
+				record = a+";"+z+b+";"+c+"\n";
 				newRecord += record;
 			}
 		}
@@ -802,6 +863,10 @@ void updateFile(int database)
 	case course:
 		std::cout << "Enter the number of which you want update : "; std::cin >> n;
 
+		readDataList(subject);
+		readDataList(room);
+		readDataList(instructor);
+		readDataList(course);
 		File.open("course.txt", ios::in|ios::out);
 		while(!File.eof()) {
 			File.getline(line, 100);					// Read by Line
@@ -817,12 +882,63 @@ void updateFile(int database)
 				isValid = true;
 				a = to_string(n);
 				std::cout << "CourseNo : " << a << endl;
-				std::cout << "Subject Name : "; std::cin>>b;
-				std::cout << "Room Description : "; std::cin>>c;
-				std::cout << "Instructor Name : "; std::cin>>d;
-				std::cout << "Day : "; std::cin>>e;
-				std::cout << "Time Start : "; std::cin>>f;
-				std::cout << "Time End : "; std::cin>>g;
+				printDataList(subject);
+				std::cout << "Subject Name : "; std::cin>>x2;
+				for (int i = 0; i < subjectList.size(); i++){
+					if (subjectList.at(i).getSubjectNo() == x2){
+						b = subjectList.at(i).getDescription();
+						break;
+					}
+				}
+				printDataList(room);
+				std::cout << "Room Description : "; std::cin>>x3;
+				for (int i = 0; i < roomList.size(); i++){
+					if (roomList.at(i).getRoomNo() == x3){
+						c = roomList.at(i).getDescription();
+						break;
+					}
+				}
+				printDataList(instructor);
+				std::cout << "Instructor Name : "; std::cin>>x4;
+				for (int i = 0; i < instructorList.size(); i++){
+					if (instructorList.at(i).getInstructorNo() == x4){
+						d = instructorList.at(i).getName();
+						break;
+					}
+				}
+				while (1){	  // Prevent Conflict
+					int succ = 0;
+					std::cout << "Day : "; std::cin >> e;
+					std::cout << "Time Start : "; std::cin >> x5;
+					f = to_string(x5);
+					std::cout << "Time End : "; std::cin >> x6;
+					g = to_string(x6);
+
+					for (int i = 0; i < courseList.size(); i++){ // If conflict is occured, exit while loop.
+						if (courseList.at(i).getCourseNo() == n){
+							i++;
+							if (i >= courseList.size()){
+								++succ;
+								break;
+							}
+						}
+						if (courseList.at(i).getDay() == *e.c_str() && courseList.at(i).getRoom().getDescription() == c){  //Check if day and room overlap each other. (DAY, ROOM)
+							if (courseList.at(i).getTimeEnd() > x5 && courseList.at(i).getTimeStart() < x6) break;
+							if (i == courseList.size() - 1){ 
+								++succ;
+								break;
+							}
+						}
+						else{
+							if (i == courseList.size() - 1){ 
+								++succ;
+								break;
+							}
+						}
+					}
+					if (succ != 0) break;
+					cout << "Conflict!! Please again\n";
+				}
 				record = a+";"+b+";"+c+";"+d+";"+e+";"+f+";"+g+"\n";
 				newRecord += record;
 			}
@@ -847,53 +963,167 @@ void updateFile(int database)
 void addFile(int database)
 {
 	fstream File;
-	string a,b,c,d,e,f,g,z;
+	int x1, x2, x3, x4, x5, x6;
+	string a,b,c,d,e,f,g,h,z;
 	char buf[20];
 	switch(database)
 	{
 	case instructor:
+		readDataList(instructor);
 		File.open("instructor.txt", ios::in|ios::app);
-		std::cout << "InstructorNo : "; std::cin>>a;
+		while (1){ // Prevent overlapped number.
+			int faill = 0;
+			std::cout << "InstructorNo : "; std::cin >> x1;
+			for (int i = 0; i < instructorList.size(); i++){
+				if (instructorList.at(i).getInstructorNo() == x1){
+					cout << "There is same Number.\n";
+					++faill;
+					break;
+				}
+			}
+			if (faill==0) break;
+		}
+		a = to_string(x1);
 		std::cout << "Password : "; std::cin>>b;
-		std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// 띄어쓰기
+		std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// Leave Spaces
 		std::cout << "Rank : "; std::cin>>d;
 
 		File <<"\n" << a << ";" << b << ";" << z+c << ";" << d;
 		break;
 	case room:
+		readDataList(room);
 		File.open("room.txt", ios::in|ios::app);
-		std::cout << "RoomNo : "; std::cin>>a;
+		while (1){ 
+			int faill = 0;
+			std::cout << "RoomNo : "; std::cin >> x1;
+			for (int i = 0; i < roomList.size(); i++){
+				if (roomList.at(i).getRoomNo() == x1){
+					cout << "There is same Number.\n";
+					++faill;
+					break;
+				}
+			}
+			if (faill == 0) break;
+		}
+		a = to_string(x1);
 		std::cout << "Description : "; std::cin>>b;
 		std::cout << "Type : "; std::cin>>c;
 
 		File <<"\n" << a << ";" << b << ";" << c;
 		break;
 	case student:
+		readDataList(student);
 		File.open("student.txt", ios::in|ios::app);
-		std::cout << "StudentNo : "; cin >> a;
+		while (1){
+			int faill = 0;
+			std::cout << "StudnetNo : "; std::cin >> x1;
+			for (int i = 0; i < studentList.size(); i++){
+				if (studentList.at(i).getStudentNo() == x1){
+					cout << "There is same Number.\n";
+					++faill;
+					break;
+				}
+			}
+			if (faill == 0) break;
+		}
+		a = to_string(x1);
 		std::cout << "Password : "; cin >> b;
-		std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// 띄어쓰기
-		std::cout << "Major : "; cin >> d;
+		std::cout << "Name : "; cin >> z; getline(cin, c, '\n');		// Leave Spaces
+		std::cout << "Major : "; cin >> h; getline(cin, d, '\n');
 
-		File <<"\n" << a << ";" << b << ";" << z+c << ";" << d;
+		File <<"\n" << a << ";" << b << ";" << z+c << ";" << h+d;
 		break;
 	case subject:
+		readDataList(subject);
 		File.open("subject.txt", ios::out|ios::app);
-		std::cout << "SubjectNo : "; std::cin>>a;
-		std::cout << "Description : "; std::cin>>b;
+		while (1){
+			int faill = 0;
+			std::cout << "SubjectNo : "; std::cin >> x1;
+			for (int i = 0; i < subjectList.size(); i++){
+				if (subjectList.at(i).getSubjectNo() == x1){
+					cout << "There is same Number.\n";
+					++faill;
+					break;
+				}
+			}
+			if (faill == 0) break;
+		}
+		a = to_string(x1);
+		std::cout << "Description : "; std::cin >> z; getline(cin, b, '\n');
 		std::cout << "Unit : "; std::cin>>c;
 
-		File <<"\n" << a << ";" << b << ";" << c;
+		File <<"\n" << a << ";" << z+b << ";" << c;
 		break;
 	case course:
+		readDataList(subject);
+		readDataList(room);
+		readDataList(instructor);
+		readDataList(course);
 		File.open("course.txt", ios::in|ios::app);
-		std::cout << "CourseNo : "; std::cin>>a;
-		std::cout << "Subject Name : "; std::cin>>b;
-		std::cout << "Room Description : "; std::cin>>c;
-		std::cout << "Instructor Name : "; std::cin>>d;
-		std::cout << "Day : "; std::cin>>e;
-		std::cout << "Time Start : "; std::cin>>f;
-		std::cout << "Time End : "; std::cin>>g;
+		while (1){
+			int faill = 0;
+			std::cout << "CourseNo : "; std::cin >> x1;
+			for (int i = 0; i < courseList.size(); i++){
+				if (courseList.at(i).getCourseNo() == x1){
+					cout << "There is same Number.\n";
+					++faill;
+					break;
+				}
+			}
+			if (faill == 0) break;
+		}
+		a = to_string(x1);
+		printDataList(subject);
+		std::cout << "Subject Number : "; std::cin>>x2;  // Not enter the string value, Show the subject lists and enter the integer and save.
+		for (int i = 0; i < subjectList.size(); i++){
+			if (subjectList.at(i).getSubjectNo() == x2){
+				b = subjectList.at(i).getDescription();
+				break;
+			}
+		}
+		printDataList(room);
+		std::cout << "Room Number : "; std::cin>>x3;  // Not enter the string value, Show the subject lists and enter the integer and save.
+		for (int i = 0; i < roomList.size(); i++){
+			if (roomList.at(i).getRoomNo() == x3){
+				c = roomList.at(i).getDescription();
+				break;
+			}
+		}
+		printDataList(instructor);
+		std::cout << "Instructor Number : "; std::cin>>x4; // Not enter the string value, Show the subject lists and enter the integer and save.
+		for (int i = 0; i < instructorList.size(); i++){
+			if (instructorList.at(i).getInstructorNo() == x4){
+				d = instructorList.at(i).getName();
+				break;
+			}
+		}
+		while (1){
+			int succ = 0;
+			std::cout << "Day : "; std::cin >> e;
+			std::cout << "Time Start : "; std::cin >> x5;
+			f = to_string(x5);
+			std::cout << "Time End : "; std::cin >> x6;
+			g = to_string(x6);
+
+			for (int i = 0; i < courseList.size(); i++){
+				if (courseList.at(i).getDay()==*e.c_str()&&courseList.at(i).getRoom().getDescription()==c){ 
+					if (courseList.at(i).getTimeEnd() > x5 && courseList.at(i).getTimeStart() < x6) break;
+					if (i == courseList.size() - 1){ 
+						++succ;
+						break;
+					}
+				}
+				else{
+					if (i == courseList.size() - 1){
+						++succ;
+						break;
+					}
+				}
+			}
+			if (succ != 0) break;
+			cout << "Conflict!! Please again\n";
+		}
+		
 
 		File <<"\n" << a << ";" << b << ";" << c << ";" << d << ";" << e << ";" << f << ";" << g;
 		break;
@@ -925,6 +1155,9 @@ void deleteFile(int database)
 		break;
 	case user:
 		break;
+	case schedule:
+		deleteRecord("schedule");
+		break;
 	}
 }
 
@@ -941,7 +1174,6 @@ int Token(char* data[], char *line)
 	}
 	return i;
 }
-
 
 /*
 	Delete : Read Lines Except for Delete Record.
@@ -988,7 +1220,6 @@ void deleteRecord(string s) {
 	}
 	File.close();
 }
-
 void readDataList(int database)
 {
 	fstream File;
@@ -1010,6 +1241,15 @@ void readDataList(int database)
 			Instructor i = Instructor(atoi(data[0]),data[1],data[2],atoi(data[3]));	// Construct 'Instructor' from tokenized data
 			instructorList.push_back(i);				// Insert to instructorList
 		}
+
+		// Sort instructorList
+		sort(instructorList.begin(), instructorList.end(),
+			[](Instructor c1, Instructor c2)
+				{
+					return c1.getInstructorNo() < c2.getInstructorNo();
+				}
+		);
+
 		break;
 	case room:
 		// 0. List Initializing
@@ -1023,6 +1263,15 @@ void readDataList(int database)
 			Room r = Room(atoi(data[0]),data[1],atoi(data[2]));	// Construct 'Instructor' from tokenized data
 			roomList.push_back(r);				// Insert to roomList
 		}
+
+		// Sort roomList
+		sort(roomList.begin(), roomList.end(),
+			[](Room c1, Room c2)
+				{
+					return c1.getRoomNo() < c2.getRoomNo();
+				}
+		);
+
 	case student:
 		// 0. List Initializing
 		studentList.clear();
@@ -1035,6 +1284,15 @@ void readDataList(int database)
 			Student s = Student(atoi(data[0]),data[1],data[2],data[3]);	// Construct 'Instructor' from tokenized data
 			studentList.push_back(s);				// Insert to studentList
 		}
+
+		// Sort studentList
+		sort(studentList.begin(), studentList.end(),
+			[](Student c1, Student c2)
+				{
+					return c1.getStudentNo() < c2.getStudentNo();
+				}
+		);
+
 		break;
 	case subject:
 		// 0. List Initializing
@@ -1048,6 +1306,15 @@ void readDataList(int database)
 			Subject s = Subject(atoi(data[0]),data[1],atoi(data[2]));	// Construct 'Subject' from tokenized data
 			subjectList.push_back(s);				// Insert to subjectList
 		}
+
+		// Sort subjectList
+		sort(subjectList.begin(), subjectList.end(),
+			[](Subject c1, Subject c2)
+				{
+					return c1.getSubjectNo() < c2.getSubjectNo();
+				}
+		);
+
 		break;
 	case course:
 		// 0. List Initializing
@@ -1062,7 +1329,7 @@ void readDataList(int database)
 			courseList.push_back(c);				// Insert to courseList
 		}
 
-		// courseList 정렬
+		// Sort courseList
 		sort(courseList.begin(), courseList.end(),
 			[](Course c1, Course c2)
 				{
@@ -1087,11 +1354,12 @@ void writeDataList(int database)
 		newRecord = "";
 		for(int i=0; i<instructorList.size(); i++) {
 			record.clear();
-			record += to_string(instructorList.at(i).getInstructorNo()) + ";";
+			record = to_string(instructorList.at(i).getInstructorNo()) + ";";
 			record += instructorList.at(i).getPassword() + ";";
 			record += instructorList.at(i).getName() + ";";
-			record += instructorList.at(i).getRank();
+			record += to_string(instructorList.at(i).getRank());
 			record += "\n";
+			newRecord += record;
 		}
 		newRecord = newRecord.substr(0, newRecord.size()-1);	// Remove Last "\n"
 		File.open("instructor.txt", ios::out|ios::trunc);
@@ -1109,7 +1377,6 @@ void writeDataList(int database)
 			record += studentList.at(i).getMajor();
 			record += "\n";
 			newRecord += record;
-			cout << "record : " + record <<endl;
 		}
 		newRecord = newRecord.substr(0, newRecord.size()-1);	// Remove Last "\n"
 		File.open("student.txt", ios::out|ios::trunc);
@@ -1124,7 +1391,6 @@ void writeDataList(int database)
 	}
 	File.close();
 }
-
 
 void printDataList(int database)
 {
@@ -1175,12 +1441,6 @@ void printDataList(int database)
 	}
 }
 
-
-
-
-
-
-
 void getScheudleList(int no)
 {
 	fstream File;
@@ -1193,10 +1453,37 @@ void getScheudleList(int no)
 		File.getline(line, 100);
 		index = Token(data, line);
 		Schedule s = Schedule(atoi(data[0]), atoi(data[1]));
-		if (atoi(data[0]) == no){  //학생번호==no인 것만 저장.
+		if (atoi(data[0]) == no){
 			scheduleList.push_back(s);
 		}
 	}
 	File.close();
 }
 
+void UpdateOnlyName(){
+	changeUsername();
+	User_SubMenu();
+}
+void changeUsername(){
+	readDataList(instructor);
+
+	string z;
+	string temp;
+	cout << "New Name : ";
+	cin >> z; getline(cin, temp, '\n');
+	z += temp;
+
+	Instructor user = Instructor();
+	for (int i = 0; i<instructorList.size(); i++) {
+		if (instructorList.at(i).getInstructorNo() == userNo) {
+			user = instructorList.at(i);
+			user.setName(z);
+			instructorList[i] = user;
+		}
+	}
+	writeDataList(instructor);
+}
+void UpdateinsPassword(){
+	changePassword();
+	User_SubMenu();
+}

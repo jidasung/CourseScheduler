@@ -1,6 +1,11 @@
 1;1234;Tamer;5
 2;4321;Jay;6
-3;5678;Ace;4
 4;8765;Kate;3
 5;0000;David;8
 6;1111;Steve;9
+8;1234;Someone;2
+9;6543;Dr.who;7
+10;6842;Unkown;5
+12;5432;Dev;9
+13;8877;Titan;7
+14;8642;Dr.Strange;7

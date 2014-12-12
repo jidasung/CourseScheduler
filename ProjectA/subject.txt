@@ -1,8 +1,12 @@
 1;Programming 1;3
-2;Image Processing;3
-3;Biology;3
-4;Math;3
-5;Statistics;3
-6;Physics;3
-7;Facebook;1
-8;Tubmlr;1
+2;Engineering Math;3
+3;Statics;2
+4;Dynamics;3
+5;OOP 2;3
+6;Data Structure;3
+7;Time Trable;2
+9;Who I am;1
+11;Communication;2
+12;Mind Control;1
+13;How to Victory;1
+14;How to be Heroe;1

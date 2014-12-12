@@ -1,8 +1,7 @@
 1;1111;Jang;Computer Science
 2;3333;Kim;Electrical Eng.
-3;3333;Park;Elctronics Eng.
 4;4444;Lee;Physics
 5;4432;Wang;Biology
-6;6666;Kang;English
 7;7777;Jeong;Baseball
 8;8888;Swings;Hiphop
+9;1234;Wook;Architecture

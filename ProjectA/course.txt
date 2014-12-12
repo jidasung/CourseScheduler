@@ -1,7 +1,15 @@
-1;OOP 2;H001;Tamer;T;8:00;10:00
-2;Math;5E105;Jay;W;16:00;18:00
-3;Statistics;2N206;Ace;M;11:00;13:00
-4;Image Processing;H320;Lee;M;12:00;14:00
-5;Biology;2S502;Kim;F;9:00;11:00
-6;Physics;5E333;Cha;H;15:00;17:00
-7;Facebook;H212;Kang;F;12:00;14:00
+1;OOP 2;H001;Tamer;T;8:00;11:00
+2;Engineering Math;5E105;Kate;M;10;13
+3;OOP 2;H001;Tamer;T;15;18
+4;Time Trable;2S426;Dr.who;W;14;16
+5;Communication;H212;Kate;M;8;10
+6;Who I am;H323;Someone;H;10;12
+7;Data Structure;H001;Jay;F;12;15
+8;Dynamics;2S409;Steve;T;14;17
+9;Programming 1;H322;Unkown;W;12;15
+10;Programming 1;H212;Tamer;F;14;17
+11;Statics;2S409;David;T;9;12
+12;Who I am;2S209;Unkown;H;11;13
+13;How to Victory;2S312;Titan;T;9;10
+14;Mind Control;2S426;Dev;W;13;14
+15;Engineering Math;2N412;Dr.Strange;T;15;18

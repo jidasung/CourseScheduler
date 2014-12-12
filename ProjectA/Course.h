@@ -22,7 +22,7 @@ public:
 	Subject getSubject() { return subject; }
 	Room getRoom() { return room; }
 	Instructor getInstructor() { return instructor; }
-	char getDay() { return day; }
+	char getDay() { return day; }	// T for Tuesday, H for Thursday
 	int getTimeStart() { return timeStart; }
 	int getTimeEnd() { return timeEnd; }
 

@@ -19,6 +19,7 @@ public:
 	string getName() { return name; }
 	int getRank() { return rank; }
 
+	void setName(string newName) { this->name = newName; }
 	void setPassword(string newPassword) { this->password = newPassword; }
 
 	void printTitle();
